@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>京张智脊·开源共创｜设计演示方案</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=DM+Sans:wght@400;500;700&display=swap');
+  :root{
+    --ink:#12151a; --paper:#f4f1ea; --cream:#ebe6dc; --teal:#0f5c56; --gold:#b7791f;
+    --muted:#5c6570; --line:rgba(18,21,26,.12); --white:#fff;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:#0c1117; color:var(--ink);
+    font-family:"Noto Serif SC","Songti SC",Georgia,serif;
+    line-height:1.65;
+  }
+  .deck{max-width:1440px;margin:0 auto;padding:24px 16px 80px}
+  .spread{
+    background:var(--paper); margin:0 0 28px; border-radius:4px; overflow:hidden;
+    box-shadow:0 24px 60px rgba(0,0,0,.35);
+    min-height:min(86vh,920px);
+  }
+  .bleed{position:relative; min-height:86vh; color:#fff; display:grid; align-items:end}
+  .bleed img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:brightness(.72) saturate(1.05)}
+  .bleed .veil{position:absolute; inset:0; background:linear-gradient(180deg,rgba(8,12,16,.15),rgba(8,12,16,.78))}
+  .bleed .copy{position:relative; z-index:2; padding:48px 56px 56px; max-width:820px}
+  .kicker{font-family:"DM Sans",system-ui,sans-serif; letter-spacing:.22em; text-transform:uppercase; font-size:12px; color:var(--gold); margin:0 0 14px}
+  .bleed h1{font-size:clamp(42px,6vw,72px); line-height:1.05; margin:0 0 18px; font-weight:700}
+  .bleed p.lead{font-size:20px; max-width:34em; margin:0; color:rgba(255,255,255,.9)}
+  .meta{font-family:"DM Sans",system-ui,sans-serif; font-size:13px; color:rgba(255,255,255,.7); margin-top:28px}
+  .grid2{display:grid; grid-template-columns:1.1fr .9fr; gap:0; min-height:86vh}
+  .grid2 > *{padding:48px 44px}
+  .pane-dark{background:#152028; color:#e8eef3}
+  .pane-dark h2{color:#fff}
+  .pane-cream{background:var(--cream)}
+  h2{font-size:34px; line-height:1.2; margin:0 0 16px}
+  h3{font-size:20px; margin:28px 0 10px}
+  p{margin:0 0 14px; color:inherit}
+  .muted{color:var(--muted)}
+  .pane-dark .muted{color:#9aa7b5}
+  .metrics{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:24px}
+  .metric{
+    background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12);
+    padding:18px 16px; border-radius:10px;
+  }
+  .metric b{display:block; font-family:"DM Sans",system-ui,sans-serif; font-size:28px; color:#9fe8d8; margin-bottom:6px}
+  .metric span{font-size:13px; color:#b7c3cf}
+  .flow{display:flex; flex-wrap:wrap; gap:10px; margin:18px 0 8px}
+  .flow i{
+    font-style:normal; font-family:"DM Sans",system-ui,sans-serif; font-size:13px;
+    background:#0f5c56; color:#e7fffb; padding:8px 12px; border-radius:999px;
+  }
+  .cards{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
+  .card{background:#fff; border:1px solid var(--line); padding:18px; border-radius:12px}
+  .card h3{margin:0 0 8px; font-size:18px}
+  .card .tag{font-family:"DM Sans",system-ui,sans-serif; font-size:11px; letter-spacing:.12em; color:var(--teal); text-transform:uppercase}
+  .figure-block{padding:0; display:grid; grid-template-rows:1fr auto; min-height:min(86vh,920px)}
+  .figure-block img{width:100%; height:100%; min-height:520px; object-fit:cover; display:block}
+  .figure-block.full-diagram{background:#1a2229}
+  .figure-block.full-diagram img{object-fit:contain; min-height:min(78vh,820px); background:#1a2229}
+  .caption{padding:18px 28px 24px; background:#fff; font-size:14px; color:var(--muted)}
+  .toc ol{margin:0; padding-left:1.2em}
+  .toc li{margin:10px 0; font-size:17px}
+  .toc a{color:inherit; text-decoration:none; border-bottom:1px solid rgba(255,255,255,.25)}
+  .strip{display:grid; grid-template-columns:1.2fr 1fr; min-height:70vh}
+  .strip img{width:100%; height:100%; object-fit:cover}
+  .strip .txt{padding:40px 36px; display:flex; flex-direction:column; justify-content:center; background:#fff}
+  table{width:100%; border-collapse:collapse; font-size:14px; margin:12px 0 0}
+  th,td{border-bottom:1px solid var(--line); padding:10px 8px; text-align:left; vertical-align:top}
+  th{font-family:"DM Sans",system-ui,sans-serif; font-size:12px; letter-spacing:.06em; color:var(--muted); font-weight:600}
+  .footer-bar{
+    display:flex; justify-content:space-between; gap:16px; padding:14px 28px;
+    font-family:"DM Sans",system-ui,sans-serif; font-size:12px; color:var(--muted);
+    border-top:1px solid var(--line); background:#fff;
+  }
+  .nav{
+    position:sticky; top:0; z-index:20; backdrop-filter:blur(10px);
+    background:rgba(12,17,23,.82); color:#d7e0ea; padding:12px 18px; margin:-24px -16px 24px;
+    display:flex; flex-wrap:wrap; gap:12px; align-items:center; border-bottom:1px solid rgba(255,255,255,.08);
+    font-family:"DM Sans",system-ui,sans-serif; font-size:13px;
+  }
+  .nav a{color:#9fe8d8; text-decoration:none}
+  .nav strong{color:#fff; margin-right:8px}
+  @media (max-width:960px){
+    .grid2,.strip,.cards,.metrics{grid-template-columns:1fr}
+    .bleed .copy,.grid2 > *{padding:28px 22px}
+    .spread{min-height:auto}
+    .figure-block img{min-height:280px}
+  }
+  @media print{
+    body{background:#fff}
+    .nav{display:none}
+    .deck{padding:0;max-width:none}
+    .spread{box-shadow:none; margin:0 0 12mm; break-inside:avoid; page-break-after:always}
+  }
+</style>
+</head>
+<body>
+<div class="nav">
+  <strong>京张智脊·开源共创</strong>
+  <a href="#cover">封面</a>
+  <a href="#protocol">协议</a>
+  <a href="#structure">结构</a>
+  <a href="#cores">三核</a>
+  <a href="#scenarios">场景</a>
+  <a href="#metrics">指标</a>
+  <span style="margin-left:auto;opacity:.7">设计演示方案 · provisional · 概念建议</span>
+</div>
+
+<div class="deck">
+
+  <!-- COVER -->
+  <section class="spread" id="cover">
+    <div class="bleed">
+      <img src="assets/figures/axon-spine-overview.jpg" alt="智脊总轴测"/>
+      <div class="veil"></div>
+      <div class="copy">
+        <p class="kicker">Haidian · Centennial Jing-Zhang · Open Call</p>
+        <h1>京张智脊<br/>开源共创</h1>
+        <p class="lead">公共领域先行，场景以「提案 → 沙盒 → 人工复核 → 合并 / 回滚」闭环落地。面向海淀百年京张AI创新带的城市设计概念建议。</p>
+        <p class="meta">gentlexyl · 2026 · 正式投稿包衍生设计演示方案 · 非法定规划</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOC + PROTOCOL -->
+  <section class="spread" id="protocol">
+    <div class="grid2">
+      <div class="pane-dark toc">
+        <p class="kicker" style="color:#9fe8d8">Contents</p>
+        <h2>本册导航</h2>
+        <ol>
+          <li><a href="#protocol">开源共创 开源共创协议</a></li>
+          <li><a href="#structure">公共领域骨架与用地平衡</a></li>
+          <li><a href="#cores">三核详图：验证 / 荣誉 / 发布</a></li>
+          <li><a href="#scenarios">十二场景与实施三角</a></li>
+          <li><a href="#metrics">指标复算与风险边界</a></li>
+        </ol>
+        <p class="muted" style="margin-top:36px">对标方法（background only）：King's Cross 公共先行 · Kendall 近校短路径 · one-north 组团共享骨架。</p>
+      </div>
+      <div class="pane-cream">
+        <p class="kicker" style="color:var(--teal)">Protocol</p>
+        <h2>开源共创</h2>
+        <p>本方案的差异点不是又一条“智脊廊道”，而是把公共领域骨架绑定一套可审计的运营语法：任何 AI 场景或界面改造，都必须先说清受益者与资料边界，再进入限时限域沙盒，经人工与公众复核后才能合并入库；必要时回滚。</p>
+        <div class="flow">
+          <i>1 提案</i><i>2 资料边界</i><i>3 试跑</i><i>4 复核</i><i>5 入库 / 回退</i>
+        </div>
+        <h3>十条原则（摘要）</h3>
+        <p class="muted">公共先行 · 文脉可步行 · 近校短路径 · 组团分化 · 混合有序 · 可审计智能体 · 低扰动更新 · 开放界面 · 长期运营 · 概念边界诚实</p>
+        <h3>受益对象</h3>
+        <p>居民、青年、学生、高校、企业、游客与弱势群体可达，不把普通生活空间变成展示背景。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STRUCTURE -->
+  <section class="spread" id="structure">
+    <div class="figure-block">
+      <img src="assets/figures/site-overview.png" alt="公共领域优先总图"/>
+      <div class="caption">一级绿脊 → 二级核庭 → 三级口袋。虚线为 provisional 边界，不作官方红线。</div>
+    </div>
+  </section>
+
+  <section class="spread" id="land-use">
+    <div class="figure-block full-diagram">
+      <img src="assets/figures/land-use-structure.png" alt="用地结构与平衡"/>
+      <div class="caption">用地结构与平衡 · 五类条带全宽展示 · EPSG:4548 概念复算 · 非法定用途</div>
+    </div>
+  </section>
+
+  <section class="spread" id="land-use-strategy">
+    <div class="grid2">
+      <div class="pane-cream">
+        <p class="kicker" style="color:var(--teal)">Land Use</p>
+        <h2>先骨架，后地块</h2>
+        <p>五类条带全覆盖提交边界：蓝绿公园 25%、产业服务 23.8%、近校转化 19.3%、社区配套 17.6%、科研研发 14.4%。容积率等法定强度保持 unknown。</p>
+        <p class="muted">公共领域合计约 34.2%（概念复算）；King's Cross ~40% 仅作目标参照，不是已达承诺。</p>
+        <h3>混合规则（概念）</h3>
+        <p class="muted">0802 允许底层展示；1401 兼容慢行活动；05 首层可混合路演；0804 允许转化展厅；0702 嵌入社区配套、禁侵扰业态。</p>
+      </div>
+      <div class="pane-dark">
+        <p class="kicker" style="color:#9fe8d8">Street Sections</p>
+        <h2>街道断面族</h2>
+        <table>
+          <thead><tr><th>断面族</th><th>要点</th></tr></thead>
+          <tbody>
+            <tr><td>A 智脊绿道</td><td>双慢行 + 树冠 + 可解释导视</td></tr>
+            <tr><td>B 缝合步行街</td><td>共享路面 + 活跃首层</td></tr>
+            <tr><td>C 站点接驳</td><td>四象限步行优先</td></tr>
+          </tbody>
+        </table>
+        <p class="muted" style="margin-top:28px">FAR / 高度 / 退线 = unknown；正式控规到位后整体重算。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CORES -->
+  <section class="spread" id="cores">
+    <div style="padding:40px 44px 20px; background:var(--paper)">
+      <p class="kicker" style="color:var(--teal)">Three Cores</p>
+      <h2>三核：验证 · 荣誉 · 发布</h2>
+      <div class="cards" style="margin-top:22px">
+        <article class="card">
+          <div class="tag">试跑</div>
+          <h3>众智园加速区</h3>
+          <p class="muted">清河界面 + 治理庭院。安全治理沙盒与全栈验证。</p>
+        </article>
+        <article class="card">
+          <div class="tag">提案 / 共创</div>
+          <h3>AI 原点社区</h3>
+          <p class="muted">近校缝合 + 荣誉广场。开源发布与贡献可撤回。</p>
+        </article>
+        <article class="card">
+          <div class="tag">Publish</div>
+          <h3>大钟寺聚集区</h3>
+          <p class="muted">四象限步行 + 路演广场。智能原生与国际交往。</p>
+        </article>
+      </div>
+    </div>
+    <div class="strip" style="min-height:52vh">
+      <img src="assets/figures/axon-zhongzhiyuan.jpg" alt="众智园轴测"/>
+      <img src="assets/figures/axon-origin-community.jpg" alt="原点轴测"/>
+    </div>
+    <div class="footer-bar"><span>概念轴测仅供理解空间关系</span><span>不替代 GeoJSON / 不构成审批总平面</span></div>
+  </section>
+
+  <section class="spread">
+    <div class="strip">
+      <img src="assets/figures/axon-dazhongsi.jpg" alt="大钟寺"/>
+      <div class="txt">
+        <p class="kicker" style="color:var(--teal)">Dazhongsi</p>
+        <h2>站城界面与路演客厅</h2>
+        <p>大钟寺承担 开源共创的“入城发布端”：路演、数据要素会客厅与四象限步行环，优先缝合交叉口可达，重资产等待权属与轨道条件确认。</p>
+        <img src="assets/figures/axon-street-corridor.jpg" alt="街道走廊" style="width:100%;height:220px;object-fit:cover;border-radius:8px;margin-top:18px"/>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCENARIOS -->
+  <section class="spread" id="scenarios">
+    <div class="grid2">
+      <div class="pane-cream">
+        <p class="kicker" style="color:var(--teal)">Scenarios</p>
+        <h2>十二张场景卡</h2>
+        <p>统一字段：位置 · 对象 · 隐私 · 人工复核 · 拟议运营主体。含 3 个产业验证场景（安全沙盒、数据会客厅、医疗问诊辅助）。</p>
+        <p class="muted">底线：禁生物识别追踪与跨场景画像；医疗/教育保留医师/教师终审；测试须可退出。</p>
+        <h3>分期三角</h3>
+        <table>
+          <thead><tr><th>阶段</th><th>主体</th><th>指标</th></tr></thead>
+          <tbody>
+            <tr><td>近期试点</td><td>社区/高校/园区/街道</td><td>断点闭合、沙盒场次、复核通过率</td></tr>
+            <tr><td>中期成型</td><td>企业服务/转化办</td><td>开放界面、转化活动、荣誉更新</td></tr>
+            <tr><td>远期完善</td><td>多方联合运营</td><td>步行连续、满意度、回滚闭环</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pane-dark">
+        <p class="kicker" style="color:#9fe8d8">Pilgrimage</p>
+        <h2>三处朝圣地标</h2>
+        <p>荣誉墙 · 开源成果廊 · 京张记忆站。贡献默认可撤回，不作强制实名排行榜。</p>
+        <img src="assets/figures/axon-pilgrimage-landmarks.jpg" alt="朝圣地标" style="width:100%;border-radius:10px;margin-top:18px"/>
+      </div>
+    </div>
+  </section>
+
+  <!-- METRICS -->
+  <section class="spread" id="metrics">
+    <div class="grid2">
+      <div class="pane-dark">
+        <p class="kicker" style="color:#9fe8d8">Evidence</p>
+        <h2>可复算指标</h2>
+        <div class="metrics">
+          <div class="metric"><b>11.41</b><span>site km²（概念）</span></div>
+          <div class="metric"><b>0.342</b><span>public realm ratio</span></div>
+          <div class="metric"><b>12</b><span>scenario cards</span></div>
+          <div class="metric"><b>3</b><span>validation scenes</span></div>
+          <div class="metric"><b>3</b><span>pilgrimage nodes</span></div>
+          <div class="metric"><b>7</b><span>renewal projects</span></div>
+        </div>
+        <p class="muted" style="margin-top:28px">FAR = unknown。正式 polygon / 控规到位后整体重算。</p>
+      </div>
+      <div class="pane-cream">
+        <p class="kicker" style="color:var(--teal)">Metrics Board</p>
+        <h2>指标证据图</h2>
+        <p class="muted">本册为设计演示方案；权威证据仍以正式投稿包中的 proposal.md、GeoJSON、metrics.json 与离线 visual 为准。</p>
+        <div style="margin-top:24px">
+          <img src="assets/figures/metrics-evidence.png" alt="指标图" style="width:100%;border-radius:8px;border:1px solid var(--line)"/>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bar"><span>设计演示方案 · baoyu / any2pdf</span><span>© display only · COMMUNITY-DISPLAY-ONLY</span></div>
+  </section>
+
+</div>
+</body>
+</html>
